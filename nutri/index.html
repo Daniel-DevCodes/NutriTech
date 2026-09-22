@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriTech - Inteligência Nutricional</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo" onclick="showSection('home')" style="cursor: pointer;">
+            <span class="neon-text">Nutri</span>Tech
+        </div>
+        
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#" onclick="showSection('home')">Início</a></li>
+            <li><a href="#" onclick="showSection('rotulos')">Análise de Rótulos</a></li>
+            <li><a href="#" onclick="showSection('receitas')">Cardápio IA</a></li>
+            <li><a href="#" onclick="showSection('dicas')">Dicas Práticas</a></li>
+            <li class="mobile-only" id="menu-login-mobile"><a href="#" onclick="showSection('login')">Acessar Conta</a></li>
+        </ul>
+        <button id="btn-login-desktop" class="btn-login desktop-only" onclick="showSection('login')">Acessar Conta</button>
+    </nav>
+
+
+    <section id="home" class="section active">
+        <div class="hero-container">
+            <div class="hero-text">
+                <h1>Transforme sua geladeira em <span class="neon-text">saúde e resultados.</span></h1>
+                <p>Nossa Inteligência Artificial mapeia os ingredientes que você já possui e traduz tabelas nutricionais complexas em decisões fáceis para o seu dia a dia.</p>
+                <button class="btn-primary" onclick="showSection('receitas')">Testar Inteligência Artificial</button>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=800&q=80" alt="Prato de comida saudável e colorida">
+            </div>
+        </div>
+
+        <div class="daily-tip mt-3 flex-container">
+            <img src="https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=500&q=80" alt="Copo de água com limão" class="tip-img">
+            <div class="tip-content">
+                <div class="tip-header">
+                    <span class="badge badge-pro">🌿 Dica do Dia</span>
+                </div>
+                <p><strong>A hidratação é o seu motor:</strong> Beber um copo de água logo ao acordar desperta o seu metabolismo, ajuda na digestão e reduz a falsa sensação de fome ao longo da manhã. Comece de dentro para fora!</p>
+            </div>
+        </div>
+
+        <div class="how-it-works mt-3">
+            <h2 class="text-center mb-2">A Jornada NutriTech</h2>
+            <div class="steps-container">
+                <div class="step card-image">
+                    <img src="https://images.unsplash.com/photo-1588964895597-cfccd6e2dbf9?auto=format&fit=crop&w=500&q=80" alt="Pessoa lendo rótulo no mercado">
+                    <div class="step-content">
+                        <h4>1. Mapeamento</h4>
+                        <p>Fotografe a tabela nutricional daquele produto duvidoso no mercado. Nossa IA identifica aditivos e calcula o impacto real na sua dieta.</p>
+                    </div>
+                </div>
+                <div class="step card-image">
+                    <img src="https://images.unsplash.com/photo-1581349485608-9469926a8e5e?auto=format&fit=crop&w=500&q=80" alt="Geladeira aberta com vegetais">
+                    <div class="step-content">
+                        <h4>2. Otimização</h4>
+                        <p>Mostre para o aplicativo o que sobrou na sua geladeira. Acabou o desperdício de comida e a falta de criatividade na cozinha.</p>
+                    </div>
+                </div>
+                <div class="step card-image">
+                    <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=500&q=80" alt="Salada fresca montada">
+                    <div class="step-content">
+                        <h4>3. Execução</h4>
+                        <p>Receba na tela a receita exata, com o cálculo preciso de proteínas, carboidratos e calorias adaptado ao seu objetivo.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="login" class="section">
+        <div class="card form-card">
+            <h2 id="form-title">Acesse sua Conta</h2>
+            <p>Entre para analisar rótulos e gerar receitas com nossa IA.</p>
+            <form id="auth-form" onsubmit="realizarLogin(event)">
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" placeholder="******" required>
+                </div>
+                <button type="submit" class="btn-primary full-width" id="btn-submit-auth">Entrar</button>
+            </form>
+            <p class="toggle-auth">Ainda não tem conta? <a href="#" onclick="toggleAuth()">Criar minha conta</a>.</p>
+        </div>
+    </section>
+
+   
+    <section id="rotulos" class="section">
+        <div class="card text-center">
+            <h2>Análise de Rótulos</h2>
+            <p>Envie a foto da tabela nutricional e nós traduzimos as informações ocultas para você.</p>
+            
+            <div class="upload-area mt-2">
+                <input type="file" id="rotulo-img" accept="image/*">
+                <label for="rotulo-img" class="btn-secondary">Carregar Foto do Rótulo</label>
+            </div>
+
+            <button class="btn-primary mt-2" onclick="analisarRotulo()">Analisar Produto</button>
+
+
+            <div id="resultado-rotulo" class="hidden result-box">
+                <h3>Veredito da IA</h3>
+                <div class="stats">
+                    <div class="stat-item">
+                        <span class="stat-value">120</span>
+                        <span class="stat-label">Kcal por porção</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value text-green">Baixo</span>
+                        <span class="stat-label">Açúcar</span>
+                    </div>
+                </div>
+                <p><strong>Conclusão:</strong> Produto com boa densidade nutritiva. A proporção de fibras é excelente. Ótima opção para o dia a dia.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="receitas" class="section">
+        <div class="card">
+            <h2>Geração de Cardápio com IA</h2>
+            <p>Informe seus ingredientes disponíveis e nossa inteligência criará uma refeição balanceada na hora.</p>
+            
+            <div class="input-group mt-2">
+                <input type="text" id="ingredientes-texto" placeholder="Digite aqui (Ex: ovos, tapioca, espinafre, frango...)">
+            </div>
+
+            <p class="ou-divisor">OU</p>
+
+            <div class="upload-area text-center">
+                <input type="file" id="ingredientes-img" accept="image/*">
+                <label for="ingredientes-img" class="btn-secondary">Enviar foto dos ingredientes</label>
+            </div>
+
+            <button class="btn-primary full-width mt-2" onclick="gerarReceita()">Gerar Refeição</button>
+
+            <div id="resultado-receita" class="hidden result-box mt-2">
+                <h3 id="titulo-receita">🍽️ Sugestão: Sobrecoxa Grelhada com Purê</h3>
+                
+                <div class="macro-badges">
+                    <span class="badge badge-cal">🔥 <span id="cal-receita">350</span> kcal (Total)</span>
+                    <span class="badge badge-pro">💪 <span id="pro-receita">35</span>g Proteínas</span>
+                    <span class="badge badge-carb">🌾 <span id="carb-receita">25</span>g Carboidratos</span>
+                </div>
+
+                <p><strong>Preparo estimado:</strong> 25 min | <strong>Dificuldade:</strong> Fácil</p>
+                <hr>
+                <p id="preparo-receita"><strong>Passo a passo:</strong> Tempere o frango com sal, pimenta e um fio de azeite. Grelhe até dourar. Cozinhe a batata doce, amasse bem e misture com um pouquinho de azeite. Sirva com tomates frescos fatiados.</p>
+                <p><em>Dica da IA: Prato excelente para dar saciedade e energia.</em></p>
+            </div>
+        </div>
+    </section>
+
+    <section id="dicas" class="section">
+        <h2 class="text-center mb-2">Estratégias Práticas para o Dia a Dia</h2>
+        <div class="grid-cards">
+            <div class="card p-0 card-image">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80" alt="Tigela com salada saudável e fresca">
+                <div class="step-content">
+                    <h3>Para Perder Peso</h3>
+                    <p><strong>Dica:</strong> Não corte carboidratos drasticamente. Aumente o volume do seu prato com vegetais e folhas. Eles ocupam espaço no estômago, garantindo saciedade com pouquíssimas calorias.</p>
+                </div>
+            </div>
+            <div class="card p-0 card-image">
+                <img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=500&q=80" alt="Prato com frango e batata doce">
+                <div class="step-content">
+                    <h3>Para Ganhar Massa</h3>
+                    <p><strong>Dica:</strong> Fracionar sua ingestão de proteínas (ovos, carnes, iogurtes) em todas as refeições do dia ajuda o corpo a construir músculos de forma constante após os treinos.</p>
+                </div>
+            </div>
+            <div class="card p-0 card-image">
+                <img src="https://images.unsplash.com/photo-1628557044797-f21a177c37ec?auto=format&fit=crop&w=500&q=80" alt="Suco verde antioxidante">
+                <div class="step-content">
+                    <h3>Para Mais Energia</h3>
+                    <p><strong>Dica:</strong> Cansaço no meio da tarde? Troque a terceira xícara de café por sucos verdes ou chás. Eles hidratam e devolvem a disposição natural sem causar aquele "crash" (queda brusca de energia) do café.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
