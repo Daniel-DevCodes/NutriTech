@@ -1,0 +1,188 @@
+// ==========================================
+// CONFIGURAÇÃO DA OPENAI (Modo Navegador)
+// ==========================================
+const OPENAI_API_KEY = "SUA_CHAVE_AQUI"; // Substitua pela sua chave real da OpenAI (sk-...)
+
+// Exemplo de teste rápido ao carregar
+async function perguntarAoAgente() {
+  try {
+    const resposta = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: "Você é um assistente prestativo." },
+          { role: "user", content: "Olá, pode me ajudar a otimizar um código?" }
+        ]
+      })
+    });
+
+    const dados = await resposta.json();
+    if (dados.choices && dados.choices.length > 0) {
+      console.log("Resposta da IA:", dados.choices[0].message.content);
+    }
+  } catch (error) {
+    console.error("Erro ao conectar com a IA:", error);
+  }
+}
+
+// ==========================================
+// LÓGICA DO SITE (Navegação e Autenticação)
+// ==========================================
+
+let usuarioLogado = false;
+
+function toggleMenu() {
+    const navLinks = document.getElementById('nav-links');
+    navLinks.classList.toggle('active');
+}
+
+function showSection(sectionId) {
+    if ((sectionId === 'rotulos' || sectionId === 'receitas') && !usuarioLogado) {
+        alert("🔒 Acesso restrito! Por favor, crie sua conta ou faça login para usar a Inteligência Artificial.");
+        sectionId = 'login'; 
+    }
+
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.classList.remove('active');
+    });
+
+    const activeSection = document.getElementById(sectionId);
+    if (activeSection) {
+        activeSection.classList.add('active');
+    }
+
+    const navLinks = document.getElementById('nav-links');
+    if(navLinks.classList.contains('active')) {
+        navLinks.classList.remove('active');
+    }
+}
+
+function realizarLogin(event) {
+    event.preventDefault(); 
+    
+    usuarioLogado = true; 
+    
+    document.getElementById('btn-login-desktop').innerText = "Sair da Conta";
+    document.getElementById('btn-login-desktop').setAttribute('onclick', 'sairDaConta()');
+    document.getElementById('menu-login-mobile').innerHTML = '<a href="#" onclick="sairDaConta()">Sair da Conta</a>';
+
+    alert("✅ Acesso liberado! Agora você pode usar a Análise de Rótulos e Gerar Receitas.");
+    showSection('home');
+}
+
+function sairDaConta() {
+    usuarioLogado = false;
+    
+    document.getElementById('btn-login-desktop').innerText = "Acessar Conta";
+    document.getElementById('btn-login-desktop').setAttribute('onclick', "showSection('login')");
+    document.getElementById('menu-login-mobile').innerHTML = '<a href="#" onclick="showSection(\'login\')">Acessar Conta</a>';
+    
+    alert("Você saiu da sua conta.");
+    showSection('home');
+}
+
+let isLogin = true;
+function toggleAuth() {
+    isLogin = !isLogin;
+    const title = document.getElementById('form-title');
+    const toggleText = document.querySelector('.toggle-auth');
+    const btn = document.getElementById('btn-submit-auth');
+
+    if (isLogin) {
+        title.innerText = "Acesse sua Conta";
+        btn.innerText = "Entrar";
+        toggleText.innerHTML = 'Ainda não tem conta? <a href="#" onclick="toggleAuth()">Criar minha conta</a>.';
+    } else {
+        title.innerText = "Crie sua Conta Grátis";
+        btn.innerText = "Cadastrar";
+        toggleText.innerHTML = 'Já tem cadastro? <a href="#" onclick="toggleAuth()">Fazer login</a>.';
+    }
+}
+
+function analisarRotulo() {
+    const inputFoto = document.getElementById('rotulo-img').value;
+    const resultado = document.getElementById('resultado-rotulo');
+    
+    if (!inputFoto) {
+        alert("Sistema: Por favor, carregue a imagem da tabela nutricional primeiro.");
+        return;
+    }
+    resultado.classList.remove('hidden');
+}
+
+// ==========================================
+// GERAÇÃO DE RECEITAS COM IA (OpenAI)
+// ==========================================
+async function gerarReceita() {
+    const texto = document.getElementById('ingredientes-texto').value;
+    const foto = document.getElementById('ingredientes-img').value;
+    const resultado = document.getElementById('resultado-receita');
+
+    const titulo = document.getElementById('titulo-receita');
+    const cal = document.getElementById('cal-receita');
+    const pro = document.getElementById('pro-receita');
+    const carb = document.getElementById('carb-receita');
+    const preparo = document.getElementById('preparo-receita');
+
+    if (!texto && !foto) {
+        alert("Sistema: Informe os ingredientes que você tem na sua casa.");
+        return;
+    }
+
+    // Mostra estado de carregamento
+    titulo.innerText = "🍽️ Gerando receita com IA...";
+    cal.innerText = "..."; 
+    pro.innerText = "..."; 
+    carb.innerText = "...";
+    preparo.innerHTML = "Aguarde um instante enquanto o chef virtual elabora a melhor opção para você...";
+    resultado.classList.remove('hidden');
+
+    try {
+        const resposta = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                    { 
+                        role: "system", 
+                        content: "Você é um chef de cozinha e nutricionista. Retorne a resposta em um formato claro. Dê um título criativo para a receita, estime calorias, proteínas e carboidratos aproximados, e dê o passo a passo do preparo." 
+                    },
+                    { 
+                        role: "user", 
+                        content: `Crie uma receita saudável usando estes ingredientes disponíveis: ${texto}` 
+                    }
+                ]
+            })
+        });
+
+        const dados = await resposta.json();
+
+        if (dados.choices && dados.choices.length > 0) {
+            const textoIA = dados.choices[0].message.content;
+            
+            titulo.innerText = "🍽️ Sugestão da IA";
+            cal.innerText = "N/A"; // A IA vai descrever no texto
+            pro.innerText = "N/A";
+            carb.innerText = "N/A";
+            preparo.innerHTML = `<p style="white-space: pre-line;">${textoIA}</p>`;
+        } else {
+            titulo.innerText = "❌ Erro";
+            preparo.innerText = "Não foi possível obter uma resposta da IA.";
+        }
+
+    } catch (error) {
+        console.error("Erro ao chamar a OpenAI:", error);
+        titulo.innerText = "❌ Erro de Conexão";
+        preparo.innerText = "Houve uma falha ao se comunicar com a inteligência artificial.";
+    }
+}
