@@ -186,3 +186,94 @@ async function gerarReceita() {
         preparo.innerText = "Houve uma falha ao se comunicar com a inteligência artificial.";
     }
 }
+async function gerarReceita() {
+    const texto = document.getElementById('ingredientes-texto').value;
+    const arquivo = document.getElementById('ingredientes-img').files[0]; // <-- .files[0]
+    const resultado = document.getElementById('resultado-receita');
+    // ... (demais elementos iguais)
+
+    if (!texto && !arquivo) {
+        alert("Sistema: Informe os ingredientes que você tem na sua casa.");
+        return;
+    }
+
+    // ... estado de carregamento igual ...
+
+    try {
+        // Monta o conteúdo do usuário (texto + imagem opcional)
+        const conteudoUsuario = [
+            {
+                type: "text",
+                text: `Crie uma receita saudável usando estes ingredientes disponíveis: ${texto || "(veja a imagem)"}`
+            }
+        ];
+
+        if (arquivo) {
+            const base64 = await arquivoParaBase64(arquivo);
+            conteudoUsuario.push({
+                type: "image_url",
+                image_url: { url: base64 }
+            });
+        }
+
+        const resposta = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini", // suporta imagem
+                messages: [
+                    { role: "system", content: "Você é um chef de cozinha e nutricionista. ..." },
+                    { role: "user", content: conteudoUsuario }
+                ]
+            })
+        });
+
+        // ... resto igual
+    }
+}
+async function analisarRotulo() {
+    const arquivo = document.getElementById('rotulo-img').files[0];
+    const resultado = document.getElementById('resultado-rotulo');
+
+    if (!arquivo) {
+        alert("Sistema: Por favor, carregue a imagem da tabela nutricional primeiro.");
+        return;
+    }
+
+    resultado.classList.remove('hidden');
+    resultado.innerText = "Analisando rótulo...";
+
+    try {
+        const base64 = await arquivoParaBase64(arquivo);
+
+        const resposta = await fetch("https://api.openai.com/v1/chat/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${OPENAI_API_KEY}`
+            },
+            body: JSON.stringify({
+                model: "gpt-4o-mini",
+                messages: [
+                    { role: "system", content: "Você é um nutricionista. Analise a tabela nutricional da imagem e diga se o produto é saudável, destacando açúcar, sódio e gorduras." },
+                    {
+                        role: "user",
+                        content: [
+                            { type: "text", text: "Analise este rótulo." },
+                            { type: "image_url", image_url: { url: base64 } }
+                        ]
+                    }
+                ]
+            })
+        });
+
+        const dados = await resposta.json();
+        resultado.innerHTML = `<p style="white-space: pre-line;">${dados.choices?.[0]?.message?.content || "Sem resposta da IA."}</p>`;
+    } catch (e) {
+        console.error(e);
+        resultado.innerText = "Erro ao analisar o rótulo.";
+    }
+}
