@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+<link rel="stylesheet" href="index.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NutriTech - Inteligência Nutricional</title>
+    <link rel="stylesheet" href="index.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,7 +14,7 @@
         <div class="logo" onclick="showSection('home')" style="cursor: pointer;">
             <span class="neon-text">Nutri</span>Tech
         </div>
-        
+
         <div class="menu-toggle" onclick="toggleMenu()">
             <span></span>
             <span></span>
@@ -100,19 +102,18 @@
         </div>
     </section>
 
-   
+
     <section id="rotulos" class="section">
         <div class="card text-center">
             <h2>Análise de Rótulos</h2>
             <p>Envie a foto da tabela nutricional e nós traduzimos as informações ocultas para você.</p>
-            
+
             <div class="upload-area mt-2">
                 <input type="file" id="rotulo-img" accept="image/*">
                 <label for="rotulo-img" class="btn-secondary">Carregar Foto do Rótulo</label>
             </div>
 
             <button class="btn-primary mt-2" onclick="analisarRotulo()">Analisar Produto</button>
-
 
             <div id="resultado-rotulo" class="hidden result-box">
                 <h3>Veredito da IA</h3>
@@ -135,7 +136,7 @@
         <div class="card">
             <h2>Geração de Cardápio com IA</h2>
             <p>Informe seus ingredientes disponíveis e nossa inteligência criará uma refeição balanceada na hora.</p>
-            
+
             <div class="input-group mt-2">
                 <input type="text" id="ingredientes-texto" placeholder="Digite aqui (Ex: ovos, tapioca, espinafre, frango...)">
             </div>
@@ -151,7 +152,7 @@
 
             <div id="resultado-receita" class="hidden result-box mt-2">
                 <h3 id="titulo-receita">🍽️ Sugestão: Sobrecoxa Grelhada com Purê</h3>
-                
+
                 <div class="macro-badges">
                     <span class="badge badge-cal">🔥 <span id="cal-receita">350</span> kcal (Total)</span>
                     <span class="badge badge-pro">💪 <span id="pro-receita">35</span>g Proteínas</span>
@@ -160,7 +161,7 @@
 
                 <p><strong>Preparo estimado:</strong> 25 min | <strong>Dificuldade:</strong> Fácil</p>
                 <hr>
-                <p id="preparo-receita"><strong>Passo a passo:</strong> Tempere o frango com sal, pimenta e um fio de azeite. Grelhe até dourar. Cozinhe a batata doce, amasse bem e misture com um pouquinho de azeite. Sirva com tomates frescos fatiados.</p>
+                <div id="preparo-receita"><strong>Passo a passo:</strong> Tempere o frango com sal, pimenta e um fio de azeite. Grelhe até dourar. Cozinhe a batata doce, amasse bem e misture com um pouquinho de azeite. Sirva com tomates frescos fatiados.</div>
                 <p><em>Dica da IA: Prato excelente para dar saciedade e energia.</em></p>
             </div>
         </div>
