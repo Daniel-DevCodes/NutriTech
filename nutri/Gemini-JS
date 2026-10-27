@@ -1,6 +1,4 @@
-// ==========================================
-// CONFIGURAÇÃO DA OPENAI (Modo Navegador)
-// ==========================================
+
 const OPENAI_API_KEY = "SUA_CHAVE_AQUI"; // Substitua pela sua chave real da OpenAI (sk-...)
 
 // Exemplo de teste rápido ao carregar
